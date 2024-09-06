@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cajero de ventas</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>Formulario de Venta</h2>
+    <form id="formularioVenta">
+        <label for="nombre">Nombre del producto:</label>
+        <input type="text" id="nombre" required><br><br>
+
+        <label for="precio">Precio unitario:</label>
+        <input type="number" id="precio" min="0.01" step="0.01" required><br><br>
+
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" id="cantidad" min="1" required><br><br>
+
+        <button type="button" onclick="agregarProducto()">Agregar Producto</button>
+    </form>
+
+    <h2>Detalle de la Venta</h2>
+    <table id="tablaVenta">
+        <thead>
+            <tr>
+                <th>Nombre Producto</th>
+                <th>Precio Unitario</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody id="detalleVenta">
+            <!-- Aquí se añadirán los productos -->
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">Total:</td>
+                <td id="totalVenta">0.00</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script>
+        // Lista para almacenar los productos de la venta
+        let listaProductos = [];
+
+        // Función para agregar un producto al detalle de venta
+        function agregarProducto() {
+            // Obtener los valores del formulario
+            let nombre = document.getElementById('nombre').value;
+            let precio = parseFloat(document.getElementById('precio').value);
+            let cantidad = parseInt(document.getElementById('cantidad').value);
+
+            // Validar que los campos no estén vacíos y que el precio y cantidad sean válidos
+            if (nombre && !isNaN(precio) && precio > 0 && !isNaN(cantidad) && cantidad > 0) {
+                // Calcular el subtotal
+                let subtotal = precio * cantidad;
+
+                // Crear el objeto producto
+                let producto = {
+                    nombre: nombre,
+                    precio: precio,
+                    cantidad: cantidad,
+                    subtotal: subtotal.toFixed(2)
+                };
+
+                // Agregar el producto a la lista
+                listaProductos.push(producto);
+
+                // Limpiar los campos del formulario
+                document.getElementById('nombre').value = '';
+                document.getElementById('precio').value = '';
+                document.getElementById('cantidad').value = '';
+
+                // Actualizar la tabla de ventas
+                actualizarTablaVenta();
+            } else {
+                alert('Por favor, complete todos los campos correctamente.');
+            }
+        }
+
+        // Función para actualizar la tabla de ventas
+        function actualizarTablaVenta() {
+            let detalleVenta = document.getElementById('detalleVenta');
+            let totalVenta = 0;
+
+            // Limpiar la tabla
+            detalleVenta.innerHTML = '';
+
+            // Recorrer la lista de productos y agregar cada uno a la tabla
+            listaProductos.forEach((producto) => {
+                let fila = `<tr>
+                                <td>${producto.nombre}</td>
+                                <td>${producto.precio}</td>
+                                <td>${producto.cantidad}</td>
+                                <td>${producto.subtotal}</td>
+                            </tr>`;
+                detalleVenta.innerHTML += fila;
+
+                // Sumar al total de la venta
+                totalVenta += parseFloat(producto.subtotal);
+            });
+
+            // Mostrar el total de la venta
+            document.getElementById('totalVenta').textContent = totalVenta.toFixed(2);
+        }
+    </script>
+</body>
+</html>
